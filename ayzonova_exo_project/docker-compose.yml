@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    ports: ["8001:8001"]
+    environment:
+      - MODEL_PATH=/app/models/model.joblib
+      - MODEL_CARD=/app/models/model_card.json
+  frontend:
+    image: python:3.10-slim
+    working_dir: /app
+    command: bash -lc "pip install -r requirements.txt && streamlit run app.py --server.port 8501 --server.address 0.0.0.0"
+    volumes:
+      - ./frontend:/app
+    environment:
+      - API_URL=http://backend:8001
+    ports: ["8501:8501"]
